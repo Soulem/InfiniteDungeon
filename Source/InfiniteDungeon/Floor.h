@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Components/SphereComponent.h"
 #include "Wall.h"
 #include "Floor.generated.h"
 
@@ -34,6 +35,9 @@ public:
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Floor Variables")
 	TMap<TEnumAsByte<FloorPartEnum>, UStaticMeshComponent*> partMap;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Trap Trigger Variables")
+	USphereComponent* floorExit;
 
 	AFloor();
 	~AFloor();

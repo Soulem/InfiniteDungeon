@@ -7,8 +7,16 @@ AFloor::AFloor(){
 	wallType = WallTypeEnum::Floor_Ceiling;
 
 	FTransform zeroPos;
-	zeroPos.SetLocation(FVector{ 0.0f, 0.0f, 0.0f });
+	zeroPos.SetLocation(FVector{ 0.0f, 0.0f, 458.0f });
 	zeroPos.SetRotation(FQuat::MakeFromEuler(FVector{ 0.0f, 0.0f, 0.0f }));
+	zeroPos.SetScale3D(FVector{14.0f, 14.0f, 14.0f});
+	floorExit = CreateDefaultSubobject<USphereComponent>(TEXT("Floor Exit"), true);
+	floorExit->SetWorldTransform(zeroPos);
+	floorExit->SetActive(false);
+	floorExit->SetHiddenInGame(true);
+	floorExit->SetVisibility(false);
+	floorExit->SetComponentTickEnabled(false);
+	floorExit->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 AFloor::~AFloor(){
@@ -37,10 +45,22 @@ void AFloor::ShowFloor(TArray<FloorPartEnum> _floorPartsToShow) {
 			floorMap[key]->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		}
 	}
-	if (_floorPartsToShow.Contains(FloorPartEnum::Solid))
+	if (_floorPartsToShow.Contains(FloorPartEnum::Solid)) {
 		isConnected = true;
-	else
+		floorExit->SetActive(false);
+		floorExit->SetHiddenInGame(true);
+		floorExit->SetVisibility(false);
+		floorExit->SetComponentTickEnabled(false);
+		floorExit->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
+	else {
 		isConnected = false;
+		floorExit->SetActive(true);
+		floorExit->SetHiddenInGame(false);
+		floorExit->SetVisibility(true);
+		floorExit->SetComponentTickEnabled(true);
+		floorExit->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	}
 }
 
 void AFloor::ShowPart(TArray<FloorPartEnum> _floorPartsToShow) {

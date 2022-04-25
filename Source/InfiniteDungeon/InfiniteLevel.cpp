@@ -31,52 +31,52 @@ void AInfiniteLevel::CreateLevelWithNumRooms(FTransform startingWorldPos, const 
 		creationIterator = roomArray[i];
 
 		if (!((AFloor*)creationIterator->data->roomWalls[WallPositionEnum::Floor]->GetChildActor())->isConnected) {
-			PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Floor, i, numRooms);
+			PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Floor, i);
 		}
 		if (!((AFloor*)creationIterator->data->roomWalls[WallPositionEnum::Ceiling]->GetChildActor())->isConnected && roomArray.Num() < numRooms) {
-			PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Ceiling, i, numRooms);
+			PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Ceiling, i);
 		}
 		if (!((AWall*)creationIterator->data->roomWalls[WallPositionEnum::Front]->GetChildActor())->isConnected && roomArray.Num() < numRooms) {
-			PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Front, i, numRooms);
+			PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Front, i);
 		}
 		switch (creationIterator->data->roomShape)
 		{
 		case RoomShapeEnum::HEX: {
 			if (!((AWall*)creationIterator->data->roomWalls[WallPositionEnum::Front_Right]->GetChildActor())->isConnected && roomArray.Num() < numRooms) {
-				PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Front_Right, i, numRooms);
+				PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Front_Right, i);
 			}
 			if (!((AWall*)creationIterator->data->roomWalls[WallPositionEnum::Back_Right]->GetChildActor())->isConnected && roomArray.Num() < numRooms) {
-				PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Back_Right, i, numRooms);
+				PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Back_Right, i);
 			}
 			if (!((AWall*)creationIterator->data->roomWalls[WallPositionEnum::Back]->GetChildActor())->isConnected && roomArray.Num() < numRooms) {
-				PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Back, i, numRooms);
+				PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Back, i);
 			}
 			if (!((AWall*)creationIterator->data->roomWalls[WallPositionEnum::Back_Left]->GetChildActor())->isConnected && roomArray.Num() < numRooms) {
-				PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Back_Left, i, numRooms);
+				PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Back_Left, i);
 			}
 			if (!((AWall*)creationIterator->data->roomWalls[WallPositionEnum::Front_Left]->GetChildActor())->isConnected && roomArray.Num() < numRooms) {
-				PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Front_Left, i, numRooms);
+				PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Front_Left, i);
 			}
 			break;
 		}
 		case RoomShapeEnum::SQU: {
 			if (!((AWall*)creationIterator->data->roomWalls[WallPositionEnum::Right]->GetChildActor())->isConnected && roomArray.Num() < numRooms) {
-				PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Right, i, numRooms);
+				PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Right, i);
 			}
 			if (!((AWall*)creationIterator->data->roomWalls[WallPositionEnum::Back]->GetChildActor())->isConnected && roomArray.Num() < numRooms) {
-				PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Back, i, numRooms);
+				PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Back, i);
 			}
 			if (!((AWall*)creationIterator->data->roomWalls[WallPositionEnum::Left]->GetChildActor())->isConnected && roomArray.Num() < numRooms) {
-				PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Left, i, numRooms);
+				PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Left, i);
 			}
 			break;
 		}
 		case RoomShapeEnum::TRI: {
 			if (!((AWall*)creationIterator->data->roomWalls[WallPositionEnum::Right]->GetChildActor())->isConnected && roomArray.Num() < numRooms) {
-				PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Right, i, numRooms);
+				PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Right, i);
 			}
 			if (!((AWall*)creationIterator->data->roomWalls[WallPositionEnum::Left]->GetChildActor())->isConnected && roomArray.Num() < numRooms) {
-				PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Left, i, numRooms);
+				PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Left, i);
 			}
 			break;
 		}
@@ -91,7 +91,7 @@ void AInfiniteLevel::CreateLevelWithNumRooms(FTransform startingWorldPos, const 
 	SetCollisionRoomsVisibility(false);
 }
 
-bool AInfiniteLevel::PlaceNewRoom(TEnumAsByte<RoomShapeEnum> parentRoomType, TEnumAsByte<WallPositionEnum> parentWall, int roomIterator, const int maxNumRooms) {
+bool AInfiniteLevel::PlaceNewRoom(TEnumAsByte<RoomShapeEnum> parentRoomType, TEnumAsByte<WallPositionEnum> parentWall, int roomIterator) {
 	RoomShapeEnum selectedRoomShape = RoomShapeEnum::NULL_ROOM_SHAPE;
 	RoomTypeEnum selectedRoomType = RoomTypeEnum::Normal;
 
@@ -563,7 +563,6 @@ void AInfiniteLevel::CreateLevelFromPlayer(FTransform startingWorldPos, int numG
 	generations = numGenerations;
 	if (playerNode == NULL) {
 		SetStartNode(startingWorldPos);
-		roomCounter++;
 		roomsToDrawBuffer.Add(roomArray[roomArray.Num() - 1]);
 	}
 	SetCollisionRooms();
@@ -575,20 +574,20 @@ void AInfiniteLevel::CreateLevelFromPlayer(FTransform startingWorldPos, int numG
 		creationIterator = roomArray[i];
 		if (!((AWall*)creationIterator->data->roomWalls[WallPositionEnum::Floor]->GetChildActor())->isConnected) {
 			// don't turn this on yet,  working on collision and lining up rooms.
-			/*if(PlaceNewRoom(creationIterator->data->roomShape, WallEnum::Floor, roomCounter, MAX_int16)){
+			if(PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Floor, i)){
 				roomCounter++;
 				roomsToDrawBuffer.Add(roomArray[roomArray.Num()-1]);
-			}*/
+			}
 		}
 		if (!((AWall*)creationIterator->data->roomWalls[WallPositionEnum::Ceiling]->GetChildActor())->isConnected) {
 			// don't turn this on yet,  working on collision and lining up rooms.
-			/*if(PlaceNewRoom(creationIterator->data->roomShape, WallEnum::Ceiling, roomCounter, MAX_int16)){
+			if(PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Ceiling, i)){
 			roomCounter++;
 				roomsToDrawBuffer.Add(roomArray[roomArray.Num() - 1]);
-				}*/
+				}
 		}
 		if (!((AWall*)creationIterator->data->roomWalls[WallPositionEnum::Front]->GetChildActor())->isConnected) {
-			if (PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Front, roomCounter, MAX_int16)) {
+			if (PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Front, i)) {
 				roomCounter++;
 				roomsToDrawBuffer.Add(roomArray[roomArray.Num() - 1]);
 			}
@@ -597,31 +596,31 @@ void AInfiniteLevel::CreateLevelFromPlayer(FTransform startingWorldPos, int numG
 		{
 		case RoomShapeEnum::HEX: {
 			if (!((AWall*)creationIterator->data->roomWalls[WallPositionEnum::Front_Right]->GetChildActor())->isConnected) {
-				if (PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Front_Right, roomCounter, MAX_int16)) {
+				if (PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Front_Right, i)) {
 					roomCounter++;
 					roomsToDrawBuffer.Add(roomArray[roomArray.Num() - 1]);
 				}
 			}
 			if (!((AWall*)creationIterator->data->roomWalls[WallPositionEnum::Back_Right]->GetChildActor())->isConnected) {
-				if (PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Back_Right, roomCounter, MAX_int16)) {
+				if (PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Back_Right, i)) {
 					roomCounter++;
 					roomsToDrawBuffer.Add(roomArray[roomArray.Num() - 1]);
 				}
 			}
 			if (!((AWall*)creationIterator->data->roomWalls[WallPositionEnum::Back]->GetChildActor())->isConnected) {
-				if (PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Back, roomCounter, MAX_int16)) {
+				if (PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Back, i)) {
 					roomCounter++;
 					roomsToDrawBuffer.Add(roomArray[roomArray.Num() - 1]);
 				}
 			}
 			if (!((AWall*)creationIterator->data->roomWalls[WallPositionEnum::Back_Left]->GetChildActor())->isConnected) {
-				if (PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Back_Left, roomCounter, MAX_int16)) {
+				if (PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Back_Left, i)) {
 					roomCounter++;
 					roomsToDrawBuffer.Add(roomArray[roomArray.Num() - 1]);
 				}
 			}
 			if (!((AWall*)creationIterator->data->roomWalls[WallPositionEnum::Front_Left]->GetChildActor())->isConnected) {
-				if (PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Front_Left, roomCounter, MAX_int16)) {
+				if (PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Front_Left, i)) {
 					roomCounter++;
 					roomsToDrawBuffer.Add(roomArray[roomArray.Num() - 1]);
 				}
@@ -630,19 +629,19 @@ void AInfiniteLevel::CreateLevelFromPlayer(FTransform startingWorldPos, int numG
 		}
 		case RoomShapeEnum::SQU: {
 			if (!((AWall*)creationIterator->data->roomWalls[WallPositionEnum::Right]->GetChildActor())->isConnected) {
-				if (PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Right, roomCounter, MAX_int16)) {
+				if (PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Right, i)) {
 					roomCounter++;
 					roomsToDrawBuffer.Add(roomArray[roomArray.Num() - 1]);
 				}
 			}
 			if (!((AWall*)creationIterator->data->roomWalls[WallPositionEnum::Back]->GetChildActor())->isConnected) {
-				if (PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Back, roomCounter, MAX_int16)) {
+				if (PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Back, i)) {
 					roomCounter++;
 					roomsToDrawBuffer.Add(roomArray[roomArray.Num() - 1]);
 				}
 			}
 			if (!((AWall*)creationIterator->data->roomWalls[WallPositionEnum::Left]->GetChildActor())->isConnected) {
-				if (PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Left, roomCounter, MAX_int16)) {
+				if (PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Left, i)) {
 					roomCounter++;
 					roomsToDrawBuffer.Add(roomArray[roomArray.Num() - 1]);
 				}
@@ -651,13 +650,13 @@ void AInfiniteLevel::CreateLevelFromPlayer(FTransform startingWorldPos, int numG
 		}
 		case RoomShapeEnum::TRI: {
 			if (!((AWall*)creationIterator->data->roomWalls[WallPositionEnum::Right]->GetChildActor())->isConnected) {
-				if (PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Right, roomCounter, MAX_int16)) {
+				if (PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Right, i)) {
 					roomCounter++;
 					roomsToDrawBuffer.Add(roomArray[roomArray.Num() - 1]);
 				}
 			}
 			if (!((AWall*)creationIterator->data->roomWalls[WallPositionEnum::Left]->GetChildActor())->isConnected) {
-				if (PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Left, roomCounter, MAX_int16)) {
+				if (PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Left, i)) {
 					roomCounter++;
 					roomsToDrawBuffer.Add(roomArray[roomArray.Num() - 1]);
 				}
@@ -671,7 +670,7 @@ void AInfiniteLevel::CreateLevelFromPlayer(FTransform startingWorldPos, int numG
 		creationIterator->connectedRooms.GenerateValueArray(childRoomsArray);
 		generation++;
 		for (ARoomNode* childRoom : childRoomsArray) {
-			CreateLevelFromPlayerRecursive(childRoom, generation);
+			CreateLevelFromPlayerRecursive(childRoom, generation, i+1);
 		}
 	}
 	generation--;
@@ -679,7 +678,7 @@ void AInfiniteLevel::CreateLevelFromPlayer(FTransform startingWorldPos, int numG
 	SetCollisionRoomsVisibility(false);
 }
 
-void AInfiniteLevel::CreateLevelFromPlayerRecursive(ARoomNode* _playerNode, int generation) {
+void AInfiniteLevel::CreateLevelFromPlayerRecursive(ARoomNode* _playerNode, int generation, int itter) {
 	if (playerNode == NULL) {
 		// Error out or player is dead
 		return;
@@ -692,96 +691,131 @@ void AInfiniteLevel::CreateLevelFromPlayerRecursive(ARoomNode* _playerNode, int 
 		creationIterator = _playerNode;
 		if (!((AWall*)creationIterator->data->roomWalls[WallPositionEnum::Floor]->GetChildActor())->isConnected) {
 			// don't turn this on yet,  working on collision and lining up rooms.
-			/*if(PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Floor, roomCounter, MAX_int16)){
+			if(PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Floor, itter)){
 				roomCounter++;
 				roomsToDrawBuffer.Add(roomArray[roomArray.Num()-1]);
-			}*/
+			}
+		}
+		else if (creationIterator->connectedRooms.Contains(WallPositionEnum::Floor)) {
+			roomsToDrawBuffer.Add(creationIterator->connectedRooms[WallPositionEnum::Floor]);
 		}
 		if (!((AWall*)creationIterator->data->roomWalls[WallPositionEnum::Ceiling]->GetChildActor())->isConnected) {
 			// don't turn this on yet,  working on collision and lining up rooms.
-			/*if(PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Ceiling, roomCounter, MAX_int16)){
+			if(PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Ceiling, itter)){
 			roomCounter++;
 				roomsToDrawBuffer.Add(roomArray[roomArray.Num() - 1]);
-				}*/
+				}
+		}
+		else if (creationIterator->connectedRooms.Contains(WallPositionEnum::Ceiling)) {
+			roomsToDrawBuffer.Add(creationIterator->connectedRooms[WallPositionEnum::Ceiling]);
 		}
 		if (!((AWall*)creationIterator->data->roomWalls[WallPositionEnum::Front]->GetChildActor())->isConnected) {
-			if (PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Front, roomCounter, MAX_int16)) {
+			if (PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Front, itter)) {
 				roomCounter++;
 				roomsToDrawBuffer.Add(roomArray[roomArray.Num() - 1]);
 			}
 		}
-		/*else if (creationIterator->connectedRooms[WallPositionEnum::Front] != nullptr) {
-			roomCounter++;
+		else if (creationIterator->connectedRooms.Contains(WallPositionEnum::Front)) {
 			roomsToDrawBuffer.Add(creationIterator->connectedRooms[WallPositionEnum::Front]);
-		}*/
+		}
 		switch (creationIterator->data->roomShape)
 		{
 		case RoomShapeEnum::HEX: {
 			if (!((AWall*)creationIterator->data->roomWalls[WallPositionEnum::Front_Right]->GetChildActor())->isConnected) {
-				if (PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Front_Right, roomCounter, MAX_int16)) {
+				if (PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Front_Right, itter)) {
 					roomCounter++;
 					roomsToDrawBuffer.Add(roomArray[roomArray.Num() - 1]);
 				}
+			}
+			else if (creationIterator->connectedRooms.Contains(WallPositionEnum::Front_Right)) {
+				roomsToDrawBuffer.Add(creationIterator->connectedRooms[WallPositionEnum::Front_Right]);
 			}
 			if (!((AWall*)creationIterator->data->roomWalls[WallPositionEnum::Back_Right]->GetChildActor())->isConnected) {
-				if (PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Back_Right, roomCounter, MAX_int16)) {
+				if (PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Back_Right, itter)) {
 					roomCounter++;
 					roomsToDrawBuffer.Add(roomArray[roomArray.Num() - 1]);
 				}
+			}
+			else if (creationIterator->connectedRooms.Contains(WallPositionEnum::Back_Right)) {
+				roomsToDrawBuffer.Add(creationIterator->connectedRooms[WallPositionEnum::Back_Right]);
 			}
 			if (!((AWall*)creationIterator->data->roomWalls[WallPositionEnum::Back]->GetChildActor())->isConnected) {
-				if (PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Back, roomCounter, MAX_int16)) {
+				if (PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Back, itter)) {
 					roomCounter++;
 					roomsToDrawBuffer.Add(roomArray[roomArray.Num() - 1]);
 				}
+			}
+			else if (creationIterator->connectedRooms.Contains(WallPositionEnum::Back)) {
+				roomsToDrawBuffer.Add(creationIterator->connectedRooms[WallPositionEnum::Back]);
 			}
 			if (!((AWall*)creationIterator->data->roomWalls[WallPositionEnum::Back_Left]->GetChildActor())->isConnected) {
-				if (PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Back_Left, roomCounter, MAX_int16)) {
+				if (PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Back_Left, itter)) {
 					roomCounter++;
 					roomsToDrawBuffer.Add(roomArray[roomArray.Num() - 1]);
 				}
 			}
+			else if (creationIterator->connectedRooms.Contains(WallPositionEnum::Back_Left)) {
+				roomsToDrawBuffer.Add(creationIterator->connectedRooms[WallPositionEnum::Back_Left]);
+			}
 			if (!((AWall*)creationIterator->data->roomWalls[WallPositionEnum::Front_Left]->GetChildActor())->isConnected) {
-				if (PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Front_Left, roomCounter, MAX_int16)) {
+				if (PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Front_Left, itter)) {
 					roomCounter++;
 					roomsToDrawBuffer.Add(roomArray[roomArray.Num() - 1]);
 				}
+			}
+			else if (creationIterator->connectedRooms.Contains(WallPositionEnum::Front_Left)) {
+				roomsToDrawBuffer.Add(creationIterator->connectedRooms[WallPositionEnum::Front_Left]);
 			}
 			break;
 		}
 		case RoomShapeEnum::SQU: {
 			if (!((AWall*)creationIterator->data->roomWalls[WallPositionEnum::Right]->GetChildActor())->isConnected) {
-				if (PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Right, roomCounter, MAX_int16)) {
+				if (PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Right, itter)) {
 					roomCounter++;
 					roomsToDrawBuffer.Add(roomArray[roomArray.Num() - 1]);
 				}
+			}
+			else if (creationIterator->connectedRooms.Contains(WallPositionEnum::Right)) {
+				roomsToDrawBuffer.Add(creationIterator->connectedRooms[WallPositionEnum::Right]);
 			}
 			if (!((AWall*)creationIterator->data->roomWalls[WallPositionEnum::Back]->GetChildActor())->isConnected) {
-				if (PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Back, roomCounter, MAX_int16)) {
+				if (PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Back, itter)) {
 					roomCounter++;
 					roomsToDrawBuffer.Add(roomArray[roomArray.Num() - 1]);
 				}
 			}
+			else if (creationIterator->connectedRooms.Contains(WallPositionEnum::Back)) {
+				roomsToDrawBuffer.Add(creationIterator->connectedRooms[WallPositionEnum::Back]);
+			}
 			if (!((AWall*)creationIterator->data->roomWalls[WallPositionEnum::Left]->GetChildActor())->isConnected) {
-				if (PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Left, roomCounter, MAX_int16)) {
+				if (PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Left, itter)) {
 					roomCounter++;
 					roomsToDrawBuffer.Add(roomArray[roomArray.Num() - 1]);
 				}
+			}
+			else if (creationIterator->connectedRooms.Contains(WallPositionEnum::Left)) {
+				roomsToDrawBuffer.Add(creationIterator->connectedRooms[WallPositionEnum::Left]);
 			}
 			break;
 		}
 		case RoomShapeEnum::TRI: {
 			if (!((AWall*)creationIterator->data->roomWalls[WallPositionEnum::Right]->GetChildActor())->isConnected) {
-				if (PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Right, roomCounter, MAX_int16)) {
+				if (PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Right, itter)) {
 					roomCounter++;
 					roomsToDrawBuffer.Add(roomArray[roomArray.Num() - 1]);
 				}
 			}
+			else if (creationIterator->connectedRooms.Contains(WallPositionEnum::Right)) {
+				roomsToDrawBuffer.Add(creationIterator->connectedRooms[WallPositionEnum::Right]);
+			}
 			if (!((AWall*)creationIterator->data->roomWalls[WallPositionEnum::Left]->GetChildActor())->isConnected) {
-				if (PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Left, roomCounter, MAX_int16)) {
+				if (PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Left, itter)) {
 					roomCounter++;
 					roomsToDrawBuffer.Add(roomArray[roomArray.Num() - 1]);
 				}
+			}
+			else if (creationIterator->connectedRooms.Contains(WallPositionEnum::Left)) {
+				roomsToDrawBuffer.Add(creationIterator->connectedRooms[WallPositionEnum::Left]);
 			}
 			break;
 		}
@@ -792,7 +826,7 @@ void AInfiniteLevel::CreateLevelFromPlayerRecursive(ARoomNode* _playerNode, int 
 		creationIterator->connectedRooms.GenerateValueArray(childRoomsArray);
 		generation++;
 		for (ARoomNode* childRoom : childRoomsArray) {
-			CreateLevelFromPlayerRecursive(childRoom, generation);
+			CreateLevelFromPlayerRecursive(childRoom, generation, itter+1);
 		}
 	}
 	generation--;
@@ -820,15 +854,10 @@ void AInfiniteLevel::RemoveRoomsFromRoomList() {
 			}
 			objectManager->ReturnRoom(roomArray[i]);
 			roomArray.RemoveAt(i);
+			roomCounter--;
 		}
 	}
-	TArray<ARoomNode*> temp = roomsToDrawBuffer.Array();
-	for (int j = 0; j < temp.Num(); j++) {
-		FSetElementId cuurRoomstoDrawElementID = roomsToDrawBuffer.FindId(temp[j]);
-		if (cuurRoomstoDrawElementID.IsValidId()) {
-			roomsToDrawBuffer.Remove(cuurRoomstoDrawElementID);
-		}
-	}
+	roomsToDrawBuffer.Empty();
 }
 
 void AInfiniteLevel::SetStartNode(FTransform startingWorldPos) {

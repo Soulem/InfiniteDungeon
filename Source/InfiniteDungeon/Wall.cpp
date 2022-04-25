@@ -3,6 +3,7 @@
 
 #include "Wall.h"
 #include "Components/BoxComponent.h"
+#include "Components/SphereComponent.h"
 
 // Sets default values
 AWall::AWall()
@@ -28,7 +29,6 @@ void AWall::BeginPlay()
 	Super::BeginPlay();
 
 }
-
 
 // Called every frame
 void AWall::Tick(float DeltaTime)
@@ -85,4 +85,33 @@ void AWall::CloseInWall_Implementation() {
 void AWall::CollapseFloor_Implementation() {
 }
 void AWall::ShootFromWall_Implementation() {
+}
+
+void AWall::SetWallCollision(bool _bHasCollision) {
+	if (WallTypeEnum::Wall == wallType) {
+		UBoxComponent* exit = FindComponentByClass<UBoxComponent>();
+		exit->SetHiddenInGame(!_bHasCollision);
+		exit->SetComponentTickEnabled(_bHasCollision);
+		exit->SetVisibility(true);
+		exit->SetActive(_bHasCollision);
+		if (_bHasCollision) {
+			exit->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		}
+		else {
+			exit->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		}
+	}
+	if (WallTypeEnum::Floor_Ceiling == wallType) {
+		USphereComponent* exit = FindComponentByClass<USphereComponent>();
+		exit->SetHiddenInGame(!_bHasCollision);
+		exit->SetComponentTickEnabled(_bHasCollision);
+		exit->SetVisibility(true);
+		exit->SetActive(_bHasCollision);
+		if (_bHasCollision) {
+			exit->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		}
+		else {
+			exit->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		}
+	}
 }

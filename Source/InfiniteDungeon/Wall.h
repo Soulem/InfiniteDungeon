@@ -98,6 +98,8 @@ public:
 
 	static TEnumAsByte<WallTypeEnum> GetRandomWallType();
 
+	void SetWallCollision(bool _bHasCollision);
+
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Trigger Functions")
 		void CloseInWall();
 

@@ -30,7 +30,8 @@ void ARoomNode::CreateRoom(UWorld* world, FActorSpawnParameters _spawnInfo, TSub
 	for (UChildActorComponent* wall : walls) {
 		((AWall*)wall->GetChildActor())->myParentRoomNode = this;
 	}
+}
 
-	/*if (RoomEnum::HEX == data->roomShape)
-		data->spawner->CreateSpawnableActor(world, level, SpawnableTypeEnum::WOLF, 1);*/
+void ARoomNode::PlayerEntersLeaves(bool _bIsLeaving) {
+	data->PlayerEntersLeaves(_bIsLeaving);
 }

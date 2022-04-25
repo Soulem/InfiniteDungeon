@@ -89,6 +89,8 @@ public:
 
 	void RandomizeWalls(TArray<WallPositionEnum> _excludePositions = {});
 	
+	void PlayerEntersLeaves(bool _bIsLeaving);
+	
 	virtual void SetTrapByType(TrapTypeEnum _roomTrapType);
 	virtual void SetRoomByType(RoomTypeEnum _roomType);
 

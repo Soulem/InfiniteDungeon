@@ -31,4 +31,7 @@ public:
 	~ARoomNode();
 	void AddConnectRoomNode(WallPositionEnum _wall, ARoomNode* _newRoom);
 	void CreateRoom(UWorld* world, FActorSpawnParameters _spawnInfo, TSubclassOf<class ARoom> room, TEnumAsByte<RoomShapeEnum> roomShape, FTransform& worldPos);
+	
+	UFUNCTION(BlueprintCallable, Category = "Room Node Functions")
+		void PlayerEntersLeaves(bool _bIsLeaving);
 };

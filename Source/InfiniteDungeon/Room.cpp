@@ -160,35 +160,40 @@ void ARoom::SetRoomByType(RoomTypeEnum _roomType) {
 	case RoomTypeEnum::Stairs_Ceiling: {
 		((AFloor*)roomWalls[WallPositionEnum::Ceiling]->GetChildActor())->ShowFloor({ FloorPartEnum::Exit });
 		((AFloor*)roomWalls[WallPositionEnum::Floor]->GetChildActor())->ShowFloor({ FloorPartEnum::Solid});
-		((AFloor*)roomWalls[WallPositionEnum::Floor]->GetChildActor())->ShowPart({ FloorPartEnum::Stairs });
+		((AFloor*)roomWalls[WallPositionEnum::Floor]->GetChildActor())->ShowPart({ FloorPartEnum::Stairs});
 		break;
 	}
 	case RoomTypeEnum::Stairs_Both: {
 		((AFloor*)roomWalls[WallPositionEnum::Ceiling]->GetChildActor())->ShowFloor({ FloorPartEnum::Exit });
 		((AFloor*)roomWalls[WallPositionEnum::Floor]->GetChildActor())->ShowFloor({ FloorPartEnum::Exit });
-		((AFloor*)roomWalls[WallPositionEnum::Floor]->GetChildActor())->ShowPart({ FloorPartEnum::Stairs });
+		((AFloor*)roomWalls[WallPositionEnum::Floor]->GetChildActor())->ShowPart({ FloorPartEnum::Stairs});
 		break;
 	}
 	case RoomTypeEnum::Hole_Floor: {
 		((AFloor*)roomWalls[WallPositionEnum::Ceiling]->GetChildActor())->ShowFloor({ FloorPartEnum::Solid });
 		((AFloor*)roomWalls[WallPositionEnum::Floor]->GetChildActor())->ShowFloor({ FloorPartEnum::Exit });
-		((AFloor*)roomWalls[WallPositionEnum::Floor]->GetChildActor())->ShowPart({});
 		break;
 	}
 	case RoomTypeEnum::Hole_Ceiling: {
 		((AFloor*)roomWalls[WallPositionEnum::Ceiling]->GetChildActor())->ShowFloor({ FloorPartEnum::Exit });
 		((AFloor*)roomWalls[WallPositionEnum::Floor]->GetChildActor())->ShowFloor({ FloorPartEnum::Solid });
-		((AFloor*)roomWalls[WallPositionEnum::Floor]->GetChildActor())->ShowPart({});
 		break;
 	}
 	case RoomTypeEnum::Hole_Both: {
 		((AFloor*)roomWalls[WallPositionEnum::Ceiling]->GetChildActor())->ShowFloor({ FloorPartEnum::Exit });
 		((AFloor*)roomWalls[WallPositionEnum::Floor]->GetChildActor())->ShowFloor({ FloorPartEnum::Exit });
-		((AFloor*)roomWalls[WallPositionEnum::Floor]->GetChildActor())->ShowPart({});
 		break;
 	}
 	default: {
 
 	}
+	}
+}
+
+void ARoom::PlayerEntersLeaves(bool _bIsLeaving) {
+	TArray<UChildActorComponent*> temp;
+	roomWalls.GenerateValueArray(temp);
+	for (UChildActorComponent* wall : temp) {
+		((AWall*)wall->GetChildActor())->SetWallCollision(_bIsLeaving);
 	}
 }

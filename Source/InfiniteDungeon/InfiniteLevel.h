@@ -104,7 +104,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Level Functions")
 		void CreateLevelWithNumRooms(FTransform startingWorldPos, const int numRooms);
 	UFUNCTION(BlueprintCallable, Category = "Level Functions")
-		bool PlaceNewRoom(TEnumAsByte<RoomShapeEnum> parentRoomShape, TEnumAsByte<WallPositionEnum> parentWall, int roomIterator, const int maxNumRooms);
+		bool PlaceNewRoom(TEnumAsByte<RoomShapeEnum> parentRoomShape, TEnumAsByte<WallPositionEnum> parentWall, int roomIterator);
 	
 
 	UFUNCTION(BlueprintCallable, Category = "Level Functions")
@@ -113,7 +113,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Level Functions")
 		void CreateLevelFromPlayer(FTransform startingWorldPos, int numGenerations);
 	UFUNCTION(BlueprintCallable, Category = "Level Functions")
-		void CreateLevelFromPlayerRecursive(ARoomNode* _playerNode, int generation);
+		void CreateLevelFromPlayerRecursive(ARoomNode* _playerNode, int generation, int itter);
 
 	void SetMagnitudeAndNewWall(TEnumAsByte<RoomShapeEnum> _currRoomShape, TEnumAsByte<RoomShapeEnum> _nextRoomShape, TEnumAsByte<WallPositionEnum> _currWall, FNextRoomTransformData& transformData);
 	void SetMagnitudeAndNewWallTRI(TEnumAsByte<RoomShapeEnum> _nextRoomShape, TEnumAsByte<WallPositionEnum> _currWall, FNextRoomTransformData& transformData);
