@@ -560,6 +560,7 @@ void AInfiniteLevel::SetMagnitudeAndNewWallHEX(TEnumAsByte<RoomShapeEnum> _nextR
 }
 
 void AInfiniteLevel::CreateLevelFromPlayer(FTransform startingWorldPos, int numGenerations) {
+
 	generations = numGenerations;
 	if (playerNode == NULL) {
 		SetStartNode(startingWorldPos);
@@ -678,46 +679,52 @@ void AInfiniteLevel::CreateLevelFromPlayer(FTransform startingWorldPos, int numG
 	SetCollisionRoomsVisibility(false);
 }
 
+// Issue here is that building the level vertically results in rooms overlapping with eachother.
 void AInfiniteLevel::CreateLevelFromPlayerRecursive(ARoomNode* _playerNode, int generation, int itter) {
+	// check to see if our playerNode is good.
 	if (playerNode == NULL) {
 		// Error out or player is dead
 		return;
 	}
-	roomsToDrawBuffer.Add(_playerNode);
 
-	SetCollisionRooms();
+	// if this node isn't in there, add it to the list of rooms to draw.
+	if (!roomsToDrawBuffer.Contains(_playerNode))
+		roomsToDrawBuffer.Add(_playerNode);
+
+	// turn on our rooms used for collision.
 	SetCollisionRoomsVisibility(true);
+
+	// if the current generation passed in is less than the max generation
+	// that was set when the level was first generated.
 	if (generation < generations) {
+		// create rooms from the room passed in.
 		creationIterator = _playerNode;
+		// if the floor is not connected, try to add a room.
 		if (!((AWall*)creationIterator->data->roomWalls[WallPositionEnum::Floor]->GetChildActor())->isConnected) {
-			// don't turn this on yet,  working on collision and lining up rooms.
 			if(PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Floor, itter)){
+				// if we can place a room increase the room counter and 
+				// add the room to the list of rooms to draw.
 				roomCounter++;
 				roomsToDrawBuffer.Add(roomArray[roomArray.Num()-1]);
 			}
 		}
-		else if (creationIterator->connectedRooms.Contains(WallPositionEnum::Floor)) {
-			roomsToDrawBuffer.Add(creationIterator->connectedRooms[WallPositionEnum::Floor]);
-		}
+		// do the same thing for the ceiling
 		if (!((AWall*)creationIterator->data->roomWalls[WallPositionEnum::Ceiling]->GetChildActor())->isConnected) {
-			// don't turn this on yet,  working on collision and lining up rooms.
 			if(PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Ceiling, itter)){
-			roomCounter++;
+				roomCounter++;
 				roomsToDrawBuffer.Add(roomArray[roomArray.Num() - 1]);
-				}
+			}
 		}
-		else if (creationIterator->connectedRooms.Contains(WallPositionEnum::Ceiling)) {
-			roomsToDrawBuffer.Add(creationIterator->connectedRooms[WallPositionEnum::Ceiling]);
-		}
+		// do the same thing for the front wall
 		if (!((AWall*)creationIterator->data->roomWalls[WallPositionEnum::Front]->GetChildActor())->isConnected) {
 			if (PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Front, itter)) {
 				roomCounter++;
 				roomsToDrawBuffer.Add(roomArray[roomArray.Num() - 1]);
 			}
 		}
-		else if (creationIterator->connectedRooms.Contains(WallPositionEnum::Front)) {
-			roomsToDrawBuffer.Add(creationIterator->connectedRooms[WallPositionEnum::Front]);
-		}
+
+		// do the same thing for each wall.
+		// we will check our room shape to see which walls we need to check.
 		switch (creationIterator->data->roomShape)
 		{
 		case RoomShapeEnum::HEX: {
@@ -727,17 +734,11 @@ void AInfiniteLevel::CreateLevelFromPlayerRecursive(ARoomNode* _playerNode, int 
 					roomsToDrawBuffer.Add(roomArray[roomArray.Num() - 1]);
 				}
 			}
-			else if (creationIterator->connectedRooms.Contains(WallPositionEnum::Front_Right)) {
-				roomsToDrawBuffer.Add(creationIterator->connectedRooms[WallPositionEnum::Front_Right]);
-			}
 			if (!((AWall*)creationIterator->data->roomWalls[WallPositionEnum::Back_Right]->GetChildActor())->isConnected) {
 				if (PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Back_Right, itter)) {
 					roomCounter++;
 					roomsToDrawBuffer.Add(roomArray[roomArray.Num() - 1]);
 				}
-			}
-			else if (creationIterator->connectedRooms.Contains(WallPositionEnum::Back_Right)) {
-				roomsToDrawBuffer.Add(creationIterator->connectedRooms[WallPositionEnum::Back_Right]);
 			}
 			if (!((AWall*)creationIterator->data->roomWalls[WallPositionEnum::Back]->GetChildActor())->isConnected) {
 				if (PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Back, itter)) {
@@ -745,26 +746,17 @@ void AInfiniteLevel::CreateLevelFromPlayerRecursive(ARoomNode* _playerNode, int 
 					roomsToDrawBuffer.Add(roomArray[roomArray.Num() - 1]);
 				}
 			}
-			else if (creationIterator->connectedRooms.Contains(WallPositionEnum::Back)) {
-				roomsToDrawBuffer.Add(creationIterator->connectedRooms[WallPositionEnum::Back]);
-			}
 			if (!((AWall*)creationIterator->data->roomWalls[WallPositionEnum::Back_Left]->GetChildActor())->isConnected) {
 				if (PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Back_Left, itter)) {
 					roomCounter++;
 					roomsToDrawBuffer.Add(roomArray[roomArray.Num() - 1]);
 				}
 			}
-			else if (creationIterator->connectedRooms.Contains(WallPositionEnum::Back_Left)) {
-				roomsToDrawBuffer.Add(creationIterator->connectedRooms[WallPositionEnum::Back_Left]);
-			}
 			if (!((AWall*)creationIterator->data->roomWalls[WallPositionEnum::Front_Left]->GetChildActor())->isConnected) {
 				if (PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Front_Left, itter)) {
 					roomCounter++;
 					roomsToDrawBuffer.Add(roomArray[roomArray.Num() - 1]);
 				}
-			}
-			else if (creationIterator->connectedRooms.Contains(WallPositionEnum::Front_Left)) {
-				roomsToDrawBuffer.Add(creationIterator->connectedRooms[WallPositionEnum::Front_Left]);
 			}
 			break;
 		}
@@ -775,26 +767,17 @@ void AInfiniteLevel::CreateLevelFromPlayerRecursive(ARoomNode* _playerNode, int 
 					roomsToDrawBuffer.Add(roomArray[roomArray.Num() - 1]);
 				}
 			}
-			else if (creationIterator->connectedRooms.Contains(WallPositionEnum::Right)) {
-				roomsToDrawBuffer.Add(creationIterator->connectedRooms[WallPositionEnum::Right]);
-			}
 			if (!((AWall*)creationIterator->data->roomWalls[WallPositionEnum::Back]->GetChildActor())->isConnected) {
 				if (PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Back, itter)) {
 					roomCounter++;
 					roomsToDrawBuffer.Add(roomArray[roomArray.Num() - 1]);
 				}
 			}
-			else if (creationIterator->connectedRooms.Contains(WallPositionEnum::Back)) {
-				roomsToDrawBuffer.Add(creationIterator->connectedRooms[WallPositionEnum::Back]);
-			}
 			if (!((AWall*)creationIterator->data->roomWalls[WallPositionEnum::Left]->GetChildActor())->isConnected) {
 				if (PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Left, itter)) {
 					roomCounter++;
 					roomsToDrawBuffer.Add(roomArray[roomArray.Num() - 1]);
 				}
-			}
-			else if (creationIterator->connectedRooms.Contains(WallPositionEnum::Left)) {
-				roomsToDrawBuffer.Add(creationIterator->connectedRooms[WallPositionEnum::Left]);
 			}
 			break;
 		}
@@ -805,43 +788,50 @@ void AInfiniteLevel::CreateLevelFromPlayerRecursive(ARoomNode* _playerNode, int 
 					roomsToDrawBuffer.Add(roomArray[roomArray.Num() - 1]);
 				}
 			}
-			else if (creationIterator->connectedRooms.Contains(WallPositionEnum::Right)) {
-				roomsToDrawBuffer.Add(creationIterator->connectedRooms[WallPositionEnum::Right]);
-			}
 			if (!((AWall*)creationIterator->data->roomWalls[WallPositionEnum::Left]->GetChildActor())->isConnected) {
 				if (PlaceNewRoom(creationIterator->data->roomShape, WallPositionEnum::Left, itter)) {
 					roomCounter++;
 					roomsToDrawBuffer.Add(roomArray[roomArray.Num() - 1]);
 				}
 			}
-			else if (creationIterator->connectedRooms.Contains(WallPositionEnum::Left)) {
-				roomsToDrawBuffer.Add(creationIterator->connectedRooms[WallPositionEnum::Left]);
-			}
 			break;
 		}
 		default:
 			break;
 		}
+
+		// grab the rooms connected to the room we're creating rom.
+		// increment current generation (passed in) and itter.
+		// call CreateLevelFromPlayerRecursive for each child.
 		TArray<ARoomNode*> childRoomsArray;
 		creationIterator->connectedRooms.GenerateValueArray(childRoomsArray);
-		generation++;
 		for (ARoomNode* childRoom : childRoomsArray) {
-			CreateLevelFromPlayerRecursive(childRoom, generation, itter+1);
+			CreateLevelFromPlayerRecursive(childRoom, ++generation, ++itter);
 		}
 	}
+	//decrement the current generation
 	generation--;
 
+	// turn off rooms used for collision.
 	SetCollisionRoomsVisibility(false);
 }
 
 void AInfiniteLevel::RemoveRoomsFromRoomList() {
+	// for the number of rooms added in our roomsArray list
 	for (int i = roomArray.Num() - 1; i >= 0; --i) {
+		// if the current room is not in our draw buffer
+		// grab the keys for the connected rooms.
 		if (!roomsToDrawBuffer.Contains(roomArray[i])) {
 			TArray<TEnumAsByte<WallPositionEnum>> wallPositionArray;
-			TArray<TEnumAsByte<WallPositionEnum>> childWallPositionArray;
 			roomArray[i]->connectedRooms.GenerateKeyArray(wallPositionArray);
+			// for each key
+			// grab the keys for the connected room's connected rooms.
 			for (TEnumAsByte<WallPositionEnum> wallPosition : wallPositionArray) {
+				TArray<TEnumAsByte<WallPositionEnum>> childWallPositionArray;
 				roomArray[i]->connectedRooms[wallPosition]->connectedRooms.GenerateKeyArray(childWallPositionArray);
+				// for each key
+				// if the connected room's connected room is our current room
+				// unconnect and the connected room's connected room at the wall and back out.
 				for (TEnumAsByte<WallPositionEnum> childWallPosition : childWallPositionArray) {
 					if (roomArray[i]->connectedRooms[wallPosition]->connectedRooms[childWallPosition] == roomArray[i]) {
 						((AWall*)roomArray[i]->connectedRooms[wallPosition]->data->roomWalls[childWallPosition]->GetChildActor())->isConnected = false;
@@ -849,14 +839,18 @@ void AInfiniteLevel::RemoveRoomsFromRoomList() {
 						break;
 					}
 				}
+				// unconnect and the connected room at the wall.
 				((AWall*)roomArray[i]->data->roomWalls[wallPosition]->GetChildActor())->isConnected = false;
 				roomArray[i]->connectedRooms.Remove(wallPosition);
 			}
+			// return the current room to the objectManager.
+			// and decrease the counter.
 			objectManager->ReturnRoom(roomArray[i]);
 			roomArray.RemoveAt(i);
 			roomCounter--;
 		}
 	}
+	// empty the draw buffer.
 	roomsToDrawBuffer.Empty();
 }
 
