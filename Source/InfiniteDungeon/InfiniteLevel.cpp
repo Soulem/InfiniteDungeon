@@ -92,6 +92,13 @@ void AInfiniteLevel::CreateLevelWithNumRooms(FTransform startingWorldPos, const 
 }
 
 bool AInfiniteLevel::PlaceNewRoom(TEnumAsByte<RoomShapeEnum> parentRoomType, TEnumAsByte<WallPositionEnum> parentWall, int roomIterator) {
+	
+	// stuff we'll need 
+	// the room shape and type that was selected
+	// current room's Transform, and the current wall's forwad and up vector
+	// collision room's default position (should be defaulted or const somewhere else)
+	// TODO:: track which other rooms are conneded to the room being placed.
+	//			I think this only effects HEX rooms.
 	RoomShapeEnum selectedRoomShape = RoomShapeEnum::NULL_ROOM_SHAPE;
 	RoomTypeEnum selectedRoomType = RoomTypeEnum::Normal;
 
@@ -102,6 +109,9 @@ bool AInfiniteLevel::PlaceNewRoom(TEnumAsByte<RoomShapeEnum> parentRoomType, TEn
 	FVector collisionRoomPosition = { 900000.0f, 900000.0f, 900000.0f };
 	TMap<TEnumAsByte<WallPositionEnum>, AWall*> collidedWallMap;
 
+	// is this the first room?
+	// place a room based off the parentWall
+	// select a random room shape.
 	if (0 == roomIterator) {
 		if (WallPositionEnum::Ceiling == parentWall) {
 			switch (creationIterator->data->roomType) {
@@ -155,14 +165,15 @@ bool AInfiniteLevel::PlaceNewRoom(TEnumAsByte<RoomShapeEnum> parentRoomType, TEn
 		}
 		selectedRoomShape = selectedRoomShapesArray[FMath::RandRange(0, selectedRoomShapesArray.Num() - 1)];
 	}
+	// else we are going to check for collision
 	else {
+		// find out where to put the wall.
+		// transformData is a variable used for output
+		// and contains the information we need.
 		SetMagnitudeAndNewWall(creationIterator->data->roomShape, RoomShapeEnum::TRI, parentWall, transformData);
 
-		TSet<ARoom*> collidedRoomSet;
-		TArray<ARoomNode*> collidedRoomSetValueArray;
-		TArray<AWall*> parrentWallArray;
-		TArray<AWall*> debugRoomWallArray;
-
+		// set our tri room collider's transform.
+		// need to do this depending on where the parentWall is.
 		FVector newLocationOffset;
 		if (WallPositionEnum::Ceiling == parentWall ||
 			WallPositionEnum::Floor == parentWall) {
@@ -181,6 +192,11 @@ bool AInfiniteLevel::PlaceNewRoom(TEnumAsByte<RoomShapeEnum> parentRoomType, TEn
 		newRoomWorldTransform.SetTranslation(currRoomWorldTransform.GetLocation() + newLocationOffset);
 		newRoomWorldTransform.SetRotation(FQuat::MakeFromEuler(tempVector));
 		debugRoomMap[RoomShapeEnum::TRI]->data->SetActorTransform(newRoomWorldTransform);
+
+		// check collision based on the parentWall.
+		// if a room is being connected to the floor
+		// we check to see if the collider's ceiling hits anything.
+		// move the tri room collider back.
 		if (WallPositionEnum::Floor == parentWall)
 			((ARoom*)debugRoomMap[RoomShapeEnum::TRI]->data)->CheckCollision(WallPositionEnum::Ceiling);
 		else
@@ -188,8 +204,9 @@ bool AInfiniteLevel::PlaceNewRoom(TEnumAsByte<RoomShapeEnum> parentRoomType, TEn
 
 		debugRoomMap[RoomShapeEnum::TRI]->data->SetActorLocation(collisionRoomPosition);
 
+		// if the tri room collider fits
+		// do the same check again for squ room collider
 		if (((ARoom*)debugRoomMap[RoomShapeEnum::TRI]->data)->GetCanFit()) {
-			// do it again for square debug room
 			SetMagnitudeAndNewWall(creationIterator->data->roomShape, RoomShapeEnum::SQU, parentWall, transformData);
 
 			if (WallPositionEnum::Ceiling == parentWall ||
@@ -215,6 +232,8 @@ bool AInfiniteLevel::PlaceNewRoom(TEnumAsByte<RoomShapeEnum> parentRoomType, TEn
 
 			debugRoomMap[RoomShapeEnum::SQU]->data->SetActorLocation(collisionRoomPosition);
 		}
+		// This was the first round for changing the floor on the fly to try to squese a room 
+		// on the floor or ceiling
 		/*else {
 			if (WallPositionEnum::Floor == parentWall) {
 				switch (creationIterator->data->roomType) {
@@ -259,6 +278,8 @@ bool AInfiniteLevel::PlaceNewRoom(TEnumAsByte<RoomShapeEnum> parentRoomType, TEn
 				};
 			}
 		}*/
+		// if the squ room collider fits
+		// do the same check again for Hex room collider
 		if (((ARoom*)debugRoomMap[RoomShapeEnum::SQU]->data)->GetCanFit()) {
 			// do it for Hexagon debug room
 			SetMagnitudeAndNewWall(creationIterator->data->roomShape, RoomShapeEnum::HEX, parentWall, transformData);
@@ -288,6 +309,7 @@ bool AInfiniteLevel::PlaceNewRoom(TEnumAsByte<RoomShapeEnum> parentRoomType, TEn
 		}
 		int maxRandRooms = 0;
 
+		// get a random shape based on what room shapes can fit
 		if (((ARoom*)debugRoomMap[RoomShapeEnum::TRI]->data)->GetCanFit()) {
 			if (((ARoom*)debugRoomMap[RoomShapeEnum::SQU]->data)->GetCanFit()) {
 				maxRandRooms++;
@@ -298,6 +320,8 @@ bool AInfiniteLevel::PlaceNewRoom(TEnumAsByte<RoomShapeEnum> parentRoomType, TEn
 			selectedRoomShape = (RoomShapeEnum)FMath::RandRange(0, maxRandRooms);
 		}
 	}
+	// if we get have a valid room shape set our new room
+	// in the same fashion as the room colliders.
 	if (selectedRoomShapesArray.Contains(selectedRoomShape)) {
 		SetMagnitudeAndNewWall(creationIterator->data->roomShape, selectedRoomShape, parentWall, transformData);
 		FVector newLocationOffset;
@@ -321,6 +345,7 @@ bool AInfiniteLevel::PlaceNewRoom(TEnumAsByte<RoomShapeEnum> parentRoomType, TEn
 		newRoomWorldTransform.SetRotation(FQuat::MakeFromEuler(tempVector));
 		const TMap<TEnumAsByte<WallPositionEnum>, ARoomNode*> zeroMap;
 
+		// Add room based off the parentWall 
 		if (WallPositionEnum::Ceiling == parentWall) {
 			switch (creationIterator->data->roomType) {
 			case RoomTypeEnum::Stairs_Ceiling: {
@@ -378,6 +403,7 @@ bool AInfiniteLevel::PlaceNewRoom(TEnumAsByte<RoomShapeEnum> parentRoomType, TEn
 		}
 		return true;
 	}
+	// we didn't find a valid room shape.
 	return false;
 }
 
